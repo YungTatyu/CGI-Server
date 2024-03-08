@@ -42,9 +42,10 @@ void	cgi_server::Event::addEvent(const int fd, short event)
 
 void	cgi_server::Event::deleteEvent(const int fd)
 {
-	events_.erase(std::remove_if(events_.begin(), events_.end(), [fd](struct pollfd pfd) {
+	auto result = std::remove_if(events_.begin(), events_.end(), [fd](struct pollfd pfd) {
 		return fd == pfd.fd;
-	}));
+	});
+	events_.erase(result, events_.end());
 }
 
 void	cgi_server::Event::setListenSocket(const int fd)
