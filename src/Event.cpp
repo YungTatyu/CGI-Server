@@ -1,18 +1,23 @@
 #include "Event.hpp"
 
 #include <algorithm>
-#include <string>
+#include <iostream>
 #include <stdexcept>
 #include <stdio.h>
+#include <unistd.h>
 
 cgi_server::Event::Event() {}
 
-cgi_server::Event::~Event() {}
+cgi_server::Event::~Event()
+{
+	close(listen_socket_);
+}
 
 void	cgi_server::Event::eventloop()
 {
 	while (true)
 	{
+		std::cerr << "waiting events..." << "\n";
 		waitEvent();
 		addActiveEvents();
 		callEventHandler();
@@ -24,6 +29,7 @@ void	cgi_server::Event::waitEvent()
 	int re = poll(events_.data(), events_.size(), -1);
 	if (re == -1)
 		std::runtime_error(std::string("poll") + strerror(errno));
+	std::cerr << re << "event happend" << "\n";
 }
 
 void	cgi_server::Event::addEvent(const int fd, short event)

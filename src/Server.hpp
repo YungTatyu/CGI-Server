@@ -11,12 +11,13 @@ namespace cgi_server
 class Server
 {
 private:
-	Event	event;
+	Event	event_;
 	Server();
 public:
 	Server(const std::string& address, const unsigned int port);
 	~Server();
 	void	initListenSocket(const std::string& address, const unsigned int port);
+	void	run();
 };
 
 } // namespace cgi_server

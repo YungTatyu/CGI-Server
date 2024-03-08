@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <stdio.h>
 #include <cstring>
-
+#include <iostream>
 
 cgi_server::Server::Server(const std::string& address, const unsigned int port)
 {
@@ -37,6 +37,12 @@ void	cgi_server::Server::initListenSocket(const std::string& address, const unsi
 	if (listen(listen_socket, SOMAXCONN) == -1)
 		throw std::runtime_error(std::string("listen") + strerror(errno));
 	
-	event.setListenSocket(listen_socket);
-	event.addEvent(listen_socket, POLLIN);
+	event_.setListenSocket(listen_socket);
+	event_.addEvent(listen_socket, POLLIN);
+	std::cerr << "server is running on " << address << ":" << port << std::endl;
+}
+
+void	cgi_server::Server::run()
+{
+	event_.eventloop();
 }
