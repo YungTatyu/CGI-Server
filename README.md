@@ -1,1 +1,1 @@
-# FastCGI-Server
+# CGI Server
