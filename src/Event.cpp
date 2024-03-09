@@ -28,7 +28,7 @@ void	cgi_server::Event::waitEvent()
 {
 	int re = poll(events_.data(), events_.size(), -1);
 	if (re == -1)
-		std::runtime_error(std::string("poll") + strerror(errno));
+		std::runtime_error(std::string("poll: ") + strerror(errno));
 	std::cerr << re << "event happend" << "\n";
 }
 

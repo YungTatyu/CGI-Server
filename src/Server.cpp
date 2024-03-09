@@ -22,7 +22,7 @@ void	cgi_server::Server::initListenSocket(const std::string& address, const unsi
 {
 	const int listen_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (listen_socket == -1)
-		throw std::runtime_error(std::string("socket:") + strerror(errno));
+		throw std::runtime_error(std::string("socket: ") + strerror(errno));
 	
 	struct sockaddr_in	svaddr;
 	std::memset(&svaddr, 0, sizeof(struct sockaddr_in));
@@ -32,10 +32,10 @@ void	cgi_server::Server::initListenSocket(const std::string& address, const unsi
 	svaddr.sin_port = htons(port);
 
 	if (bind(listen_socket, (sockaddr*)&svaddr, sizeof(struct sockaddr_in)) == -1)
-		throw std::runtime_error(std::string("bind") + strerror(errno));
+		throw std::runtime_error(std::string("bind: ") + strerror(errno));
 
 	if (listen(listen_socket, SOMAXCONN) == -1)
-		throw std::runtime_error(std::string("listen") + strerror(errno));
+		throw std::runtime_error(std::string("listen: ") + strerror(errno));
 	
 	event_.setListenSocket(listen_socket);
 	event_.addEvent(listen_socket, POLLIN);
