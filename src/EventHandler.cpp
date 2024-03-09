@@ -27,7 +27,7 @@ void	cgi_server::EventHandler::acceptNewClient(const int fd, Event& event)
 {
 	int cli_sock = accept(fd, NULL, NULL);
 	if (cli_sock == -1)
-		std::cerr << "accept:" << strerror(errno) << std::endl;
+		std::cerr << "accept:" << strerror(errno);
 
 	event.addEvent(cli_sock, POLLIN);
 }
@@ -52,7 +52,7 @@ void	cgi_server::EventHandler::recvRequest(const int fd, Event& event)
 	}
 
 	std::cerr << "request:\n";
-	std::copy(request.begin(), request.end(), std::ostream_iterator<unsigned char>(std::cerr, " "));
+	std::copy(request.begin(), request.end(), std::ostream_iterator<unsigned char>(std::cerr, ""));
 	std::cerr << std::endl;
 	event.updateEvent(fd, POLLOUT);
 }
