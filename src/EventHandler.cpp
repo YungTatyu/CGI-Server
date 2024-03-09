@@ -37,6 +37,7 @@ void	cgi_server::EventHandler::recvRequest(const int fd, Event& event)
 	const unsigned int	buffersize = 1024;
 	std::vector<unsigned char>	request;
 	ssize_t	total_read_bytes = 0;
+	std::cerr << "recving event" << std::endl;
 	while (true)
 	{
 		request.resize(request.size() + buffersize);
@@ -59,18 +60,39 @@ void	cgi_server::EventHandler::recvRequest(const int fd, Event& event)
 
 void	cgi_server::EventHandler::handleWriteEvent(const int fd, Event& event)
 {
+	std::cerr << "write events\n";
 	auto now = std::chrono::system_clock::now();
 	std::time_t current_time = std::chrono::system_clock::to_time_t(now);
     std::ostringstream oss;
     oss << std::put_time(std::localtime(&current_time), "%Y-%m-%d %H:%M:%S");
 
 	const std::string body = std::string("<p>") + oss.str() + "</p>" + "<p>this is cgi-made response</p>";
-
+	const std::string respose = std::string("content-type") + "200\n"
+		+ "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Document</title></head><body>"
+		+  body + "</body></html>";
 	// cgiはresponseを標準出力に出力する
-	std::cout << "content-type" << "200\n"
-		<< "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Document</title></head><body>"
-		<< body << "</body></html>" << std::endl;
+	std::cout << respose << std::endl;
+	sendResponse(fd, event, respose);
+}
 
+void	cgi_server::EventHandler::sendResponse(const int fd, Event& event, const std::string& response)
+{
+	const unsigned int	buffersize = 1024;
+	ssize_t	total_bytes = 0;
+	while (true)
+	{
+		ssize_t	sending_bytes = (response.size() - total_bytes) > buffersize ? buffersize : response.size() - total_bytes;
+		ssize_t sent_bytes = send(fd, response.data() + total_bytes, sending_bytes, 0);
+		if (sent_bytes == -1)
+		{
+			std::cerr << "send: " << strerror(errno);
+			return;
+		}
+		if (sent_bytes < buffersize)
+			break;
+		total_bytes += sent_bytes;
+	}
+	std::cerr << "sent response" << std::endl;
 	close(fd);
 	event.deleteEvent(fd);
 }

@@ -48,6 +48,7 @@ void	cgi_server::Event::updateEvent(const int fd, short event)
 	if (it == events_.end())
 		return;
 	it->events = event;
+	it->revents = 0;
 }
 
 void	cgi_server::Event::deleteEvent(const int fd)
@@ -75,11 +76,20 @@ void	cgi_server::Event::callEventHandler()
 {
 	std::for_each(active_events_.begin(), active_events_.end(), [this](struct pollfd pfd) {
 		if (isReadEvent(pfd))
+		{
+			std::cerr << "read event happend" << std::endl;
 			cgi_server::EventHandler::handleReadEvent(pfd.fd, *this);
+		}
 		else if (isWriteEvent(pfd))
+		{
+			std::cerr << "write event happend" << std::endl;
 			cgi_server::EventHandler::handleWriteEvent(pfd.fd, *this);
+		}
 		else if (isErrorEvent(pfd))
+		{
+			std::cerr << "error event happend" << std::endl;
 			cgi_server::EventHandler::handleErrorEvent(pfd.fd, *this);
+		}
 	});
 }
 
@@ -95,7 +105,7 @@ bool	cgi_server::Event::isReadEvent(const struct pollfd& pfd) const
 
 bool	cgi_server::Event::isWriteEvent(const struct pollfd& pfd) const
 {
-	return pfd.revents & POLLOUT;
+	return pfd.revents & POLLOUT || pfd.revents & POLLHUP;
 }
 
 bool	cgi_server::Event::isErrorEvent(const struct pollfd& pfd) const
