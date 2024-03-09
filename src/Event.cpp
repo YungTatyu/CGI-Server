@@ -40,6 +40,16 @@ void	cgi_server::Event::addEvent(const int fd, short event)
 	this->events_.push_back(pfd);
 }
 
+void	cgi_server::Event::updateEvent(const int fd, short event)
+{
+	auto it = std::find_if(events_.begin(), events_.end(), [fd](struct pollfd pfd) {
+		return fd == pfd.fd;
+	});
+	if (it == events_.end())
+		return;
+	it->events = event;
+}
+
 void	cgi_server::Event::deleteEvent(const int fd)
 {
 	auto result = std::remove_if(events_.begin(), events_.end(), [fd](struct pollfd pfd) {

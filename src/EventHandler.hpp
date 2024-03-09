@@ -16,6 +16,7 @@ public:
 	static void	handleWriteEvent(const int fd, Event& event);
 	static void	handleErrorEvent(const int fd, Event& event);
 	static void	acceptNewClient(const int fd, Event& event);
+	static void	recvRequest(const int fd, Event& event);
 };	
 } // namespace cgi_server
 

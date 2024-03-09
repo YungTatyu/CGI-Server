@@ -20,6 +20,7 @@ public:
 	void	eventloop();
 	void	waitEvent();
 	void	addEvent(const int fd, short event);
+	void	updateEvent(const int fd, short event);
 	void	deleteEvent(const int fd);
 	void	setListenSocket(const int fd);
 	void	addActiveEvents();
