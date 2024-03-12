@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
 cgi_server::Event::Event() {}
