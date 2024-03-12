@@ -25,6 +25,7 @@ public:
 	void	setListenSocket(const int fd);
 	void	addActiveEvents();
 	void	callEventHandler();
+	void	clearAllEvents();
 	void	clearAllActiveEvents();
 	bool	isReadEvent(const struct pollfd& pfd) const;
 	bool	isWriteEvent(const struct pollfd& pfd) const;

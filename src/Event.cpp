@@ -22,6 +22,7 @@ void	cgi_server::Event::eventloop()
 		waitEvent();
 		addActiveEvents();
 		callEventHandler();
+		clearAllActiveEvents();
 	}
 }
 
@@ -91,6 +92,17 @@ void	cgi_server::Event::callEventHandler()
 			std::cerr << "error event happend" << std::endl;
 			cgi_server::EventHandler::handleErrorEvent(pfd.fd, *this);
 		}
+	});
+}
+
+/**
+ * @brief 発生したイベントフラグを削除する
+ * 
+ */
+void	cgi_server::Event::clearAllEvents()
+{
+	std::for_each(events_.begin(), events_.end(), [](struct pollfd pfd){
+		pfd.revents = 0;
 	});
 }
 

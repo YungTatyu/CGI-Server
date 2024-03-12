@@ -26,6 +26,7 @@ void	cgi_server::EventHandler::handleReadEvent(const int fd, Event& event)
 
 void	cgi_server::EventHandler::acceptNewClient(const int fd, Event& event)
 {
+	std::cerr << "accepting client\n";
 	int cli_sock = accept(fd, NULL, NULL);
 	if (cli_sock == -1)
 		std::cerr << "accept:" << strerror(errno);
@@ -68,7 +69,7 @@ void	cgi_server::EventHandler::handleWriteEvent(const int fd, Event& event)
     oss << std::put_time(std::localtime(&current_time), "%Y-%m-%d %H:%M:%S");
 
 	const std::string body = std::string("<p>") + oss.str() + "</p>" + "<p>this is cgi-made response</p>";
-	const std::string respose = std::string("content-type") + "200\n"
+	const std::string respose = std::string("Content-type: text/html\r\n") + "200\r\n"
 		+ "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Document</title></head><body>"
 		+  body + "</body></html>";
 	// cgiはresponseを標準出力に出力する
