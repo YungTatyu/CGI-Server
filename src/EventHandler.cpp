@@ -68,8 +68,10 @@ void	cgi_server::EventHandler::handleWriteEvent(const int fd, Event& event)
     std::ostringstream oss;
     oss << std::put_time(std::localtime(&current_time), "%Y-%m-%d %H:%M:%S");
 
-	const std::string body = std::string("<p>") + oss.str() + "</p>" + "<p>this is cgi-made response</p>";
-	const std::string respose = std::string("Content-type: text/html\r\n") + "200\r\n"
+	const std::string header = std::string("HTTP/1.1 200 OK\r\n") + "Content-type: text/html\r\n\r\n";
+	const std::string body = std::string("<h1>Hello CGI!</h1>")
+		+ "<p>" + oss.str() + "</p>" + "<p>this is cgi-made response</p>";
+	const std::string respose = header  
 		+ "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Document</title></head><body>"
 		+  body + "</body></html>";
 	// cgiはresponseを標準出力に出力する
